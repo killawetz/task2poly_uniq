@@ -1,8 +1,7 @@
 package killawetz.uniq;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Uniq {
 
@@ -22,19 +21,53 @@ public class Uniq {
     private ArrayList<String> finalList = new ArrayList<>();
     private static String endOfConsole = "End"; //ограничитель для сканера
 
-    public void uniq(InputStream in, OutputStream out) throws IOException {
-        if (in != null) {
-            try (InputStreamReader reader = new InputStreamReader(in)) {
-                try (OutputStreamWriter writer = new OutputStreamWriter(out)) {
-                } // дописать для файла
+    public void scanText(String input) throws IOException { // метод для получения текста
+        if (input != null) {
+            FileReader reader = new FileReader(input);
+            Scanner scan = new Scanner(reader);
+            while (scan.hasNextLine()) {
+                inputStrings.add(scan.next());
             }
-        } else {
-            Scanner input = new Scanner(System.in);
-            System.out.println("Напишите" + endOfConsole + "когда закончите ввод");
-            while(!input.nextLine().equals(endOfConsole)) {
-                inputStrings.add(input.nextLine());
+            reader.close();
+        }
+         else {
+            Scanner scanInput = new Scanner(System.in);
+            System.out.println("Напишите " + endOfConsole + " когда закончите ввод");
+            while(!scanInput.nextLine().equals(endOfConsole)) {
+                inputStrings.add(scanInput.nextLine());
             }
-            in.close();
+            scanInput.close();
+        }
+    }
+
+    public void union(ArrayList<String> inputs) {
+        int count = 1;
+        String str1;
+        String str2;
+        for (int i = 0; i < inputs.size() - 1; i++) {
+            str1 = inputs.get(i);
+            str2 = inputs.get(i+1);
+            if(comparisonIgnoreCase(str1, str2) || comparisonWithoutNSymbols(str1,str2)) {
+            count++;
+            }
+            else {
+            finalAdding(str1, count);
+            count = 1;
+            }
+        }
+
+    }
+
+    public void finalAdding(String str, int count){
+        if(onlyUniq && count == 1) {
+        finalList.add(str);
+        }
+        if(!onlyUniq) {
+            if (numberStrings) {
+                finalList.add(count + " " + str);
+            } else {
+                finalList.add(str);
+            }
         }
     }
 
@@ -59,22 +92,27 @@ public class Uniq {
         return equal;
     }
 
-    public void countStr(ArrayList<String> inputStr){
-        int num = 1;
-        for (int i = 0; i < inputStr.size() - 1 ; i++) {
-            if(comparisonIgnoreCase(inputStr.get(i), inputStr.get(i+1))) {
+
+    public void outputText(String outputFileName, ArrayList<String> data ) throws IOException {
+        if(outputFileName!= null) {
+            FileWriter writer = new FileWriter(outputFileName);
+            for (String aData : data) {
+                writer.write(aData);
+            }
+            writer.close();
         }
-    }
+        else {
+            for (String aData : data) {
+                System.out.println(aData);
+            }
+        }
+
     }
 
-
-    public void union(ArrayList<String> inputStrings) {
-        for (int i = 0; i < inputStrings.size(); i++) {
-            if(ignoreCase || ignoreNSymbols > 0) {
-                if(comparisonIgnoreCase(inputStrings.get(i), inputStrings.get(i+1)) ||
-                        comparisonWithoutNSymbols(inputStrings.get(i), inputStrings.get(i+1))) {
-                    finalList.add(inputStrings.get(i));
-        }
+    public void uniq(String inputFileName, String outputFileName) throws IOException {
+        scanText(inputFileName);
+        union(inputStrings);
+        outputText(outputFileName, finalList);
     }
 
 }

@@ -22,7 +22,7 @@ public class UniqLauncher {
     private boolean uniqStrings;
 
     @Option(name = "-c", metaVar = "numberOfStrings", usage = "Number of changed strings")
-    private int numberOfStrings;
+    private boolean numberOfStrings;
 
     @Argument(metaVar = "InputName", usage = "Input file name")
     private String inputFileName;
@@ -43,5 +43,9 @@ public class UniqLauncher {
             parser.printUsage(System.err); // получить список доступных команд
             return;
         }
+
+
+        Uniq uniq = new Uniq(ignoreCase, skipNChars, uniqStrings, numberOfStrings);
+        uniq.uniq(inputFileName, outputFileName);
     }
 }
