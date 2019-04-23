@@ -45,6 +45,7 @@ public class UniqLauncher {
         }
 
 
+
         Uniq uniq = new Uniq(ignoreCase, skipNChars, uniqStrings, numberOfStrings);
         uniq.uniq(inputFileName, outputFileName);
     }

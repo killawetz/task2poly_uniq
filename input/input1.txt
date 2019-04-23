@@ -1,0 +1,4 @@
+ignoreCase
+ignorecase
+IGNORECASE
+IgNoReCaSe

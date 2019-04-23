@@ -32,9 +32,11 @@ public class Uniq {
         }
          else {
             Scanner scanInput = new Scanner(System.in);
-            System.out.println("Напишите " + endOfConsole + " когда закончите ввод");
-            while(!scanInput.nextLine().equals(endOfConsole)) {
-                inputStrings.add(scanInput.nextLine());
+            System.out.println("Write " + endOfConsole + " when you finish typing");
+            String currentLine = scanInput.nextLine();
+            while(!currentLine.equals(endOfConsole)) {
+                inputStrings.add(currentLine);
+                currentLine = scanInput.nextLine();
             }
             scanInput.close();
         }
@@ -43,18 +45,27 @@ public class Uniq {
     public void union(ArrayList<String> inputs) {
         int count = 1;
         String str1;
-        String str2;
-        for (int i = 0; i < inputs.size() - 1; i++) {
-            str1 = inputs.get(i);
-            str2 = inputs.get(i+1);
-            if(comparisonIgnoreCase(str1, str2) || comparisonWithoutNSymbols(str1,str2)) {
+        String str2 = inputs.get(0);
+        String strBuffer;
+        String firstSimilarity;
+        for (int i = 1; i < inputs.size(); i++) {
+            strBuffer = inputs.get(i);
+            str1 = str2;
+            str2 = strBuffer;
+            firstSimilarity = str1;
+            if(comparison(str1,str2)){
+                if(ignoreCase) {
+                   str2 = str2.toLowerCase();
+                }
             count++;
             }
             else {
+                firstSimilarity = str2;
             finalAdding(str1, count);
             count = 1;
             }
         }
+        finalAdding(str2,count);
 
     }
 
@@ -64,23 +75,25 @@ public class Uniq {
         }
         if(!onlyUniq) {
             if (numberStrings) {
-                finalList.add(count + " " + str);
+                if(count > 1) {
+                    finalList.add(count + " " + str);
+                } else {
+                    finalList.add(str);
+                }
             } else {
                 finalList.add(str);
             }
         }
     }
 
-    public boolean comparisonIgnoreCase(String string1, String string2) { // флаг -i
+    public boolean comparison(String string1, String string2) {
         boolean equal = false;
+        if(string1.equals(string2)) {
+            equal = true;
+        }
         if(ignoreCase) {
             equal = string1.equalsIgnoreCase(string2);
         }
-        return equal;
-    }
-
-    public boolean comparisonWithoutNSymbols(String string1, String string2) { // флаг -s N
-        boolean equal = false;
         if (ignoreNSymbols > 0) {
             if (string1.length() == string2.length()) {
                 equal = string1.regionMatches(ignoreNSymbols,
@@ -93,11 +106,13 @@ public class Uniq {
     }
 
 
+
     public void outputText(String outputFileName, ArrayList<String> data ) throws IOException {
+        String lineSeparator = System.getProperty("line.separator");
         if(outputFileName!= null) {
             FileWriter writer = new FileWriter(outputFileName);
             for (String aData : data) {
-                writer.write(aData);
+                writer.write(aData + lineSeparator);
             }
             writer.close();
         }
@@ -109,10 +124,14 @@ public class Uniq {
 
     }
 
-    public void uniq(String inputFileName, String outputFileName) throws IOException {
+    public void uniq(String inputFileName,
+                     String outputFileName) throws IOException {
         scanText(inputFileName);
+        if(ignoreCase && onlyUniq || ignoreNSymbols > 0 && onlyUniq || numberStrings && onlyUniq ) {
+            throw new IllegalArgumentException("The -u flag cannot be used with the -i, -s, -c flags");
+        }
         union(inputStrings);
-        outputText(outputFileName, finalList);
+        outputText(outputFileName,finalList);
     }
 
 }
