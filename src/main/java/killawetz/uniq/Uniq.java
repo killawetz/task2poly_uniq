@@ -47,25 +47,25 @@ public class Uniq {
         String str1;
         String str2 = inputs.get(0);
         String strBuffer;
-        String firstSimilarity;
+        String firstSimilarity = inputs.get(0);
         for (int i = 1; i < inputs.size(); i++) {
             strBuffer = inputs.get(i);
             str1 = str2;
             str2 = strBuffer;
-            firstSimilarity = str1;
             if(comparison(str1,str2)){
                 if(ignoreCase) {
+                    firstSimilarity = str1;
                    str2 = str2.toLowerCase();
                 }
             count++;
             }
             else {
                 firstSimilarity = str2;
-            finalAdding(str1, count);
+            finalAdding(firstSimilarity, count);
             count = 1;
             }
         }
-        finalAdding(str2,count);
+        finalAdding(firstSimilarity,count);
 
     }
 
