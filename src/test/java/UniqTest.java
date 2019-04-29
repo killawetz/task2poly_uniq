@@ -1,12 +1,8 @@
 import killawetz.uniq.Uniq;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -39,6 +35,7 @@ public class UniqTest {
             "output\\output1.txt");
     assertFileContent("output\\output1.txt", "ignorecase");
     }
+
 
     @Test
     public void ignoreNSymbols() throws IOException {
